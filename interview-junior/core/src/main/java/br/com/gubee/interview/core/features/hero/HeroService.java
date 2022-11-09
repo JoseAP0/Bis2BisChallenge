@@ -31,6 +31,7 @@ public class HeroService {
         return heroRepository.findByName(name);
     }
 
-    public UUID update(CreateHeroRequest createHeroRequest) {
+    public UUID update(CreateHeroRequest updateHeroRequest, UUID id) {
+        return heroRepository.update(new Hero(updateHeroRequest, powerStatsService.create(new PowerStats(updateHeroRequest))), id);
     }
 }

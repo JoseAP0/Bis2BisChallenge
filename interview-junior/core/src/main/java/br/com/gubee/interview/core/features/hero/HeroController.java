@@ -46,11 +46,11 @@ public class HeroController {
         return heroService.findByName(name);
     }
 
-    @PatchMapping
+    @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<Void> update (@RequestBody CreateHeroRequest createHeroRequest ) {
+    public ResponseEntity<Void> update (@RequestBody CreateHeroRequest updateHeroRequest,  @RequestParam ("id") UUID id) {
 
-        final UUID id = heroService.update(createHeroRequest);
+        final UUID uuid = heroService.update(updateHeroRequest, id);
         return created(URI.create(format("/api/v1/heroes/%s", id))).build();
     }
 }

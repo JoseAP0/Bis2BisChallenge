@@ -19,9 +19,13 @@ public class HeroRepository {
     @Autowired
     PowerStatsService powerStatsService;
 
-    private static final String CREATE_HERO_QUERY = "INSERT INTO hero" +
+    private static final String CREATE_HERO_QUERY = "INSERT INTO interview_service.hero" +
             " (name, race, power_stats_id)" +
             " VALUES (:name, :race, :powerStatsId) RETURNING id";
+
+    private static final String UPDATE_HERO_QUERY = "UPDATE interview_service.hero SET " +
+            " name=:name, race=:race, power_stats_id=:powerStatsId" +
+            " WHERE hero.id = :id";
 
     private static final String FIND_BY_ID_HERO_QUERY = "SELECT hero.id, name, race, strength, agility, dexterity, intelligence, power_stats_id " +
             "FROM interview_service.hero INNER JOIN interview_service.power_stats " +
@@ -58,5 +62,17 @@ public class HeroRepository {
                 FIND_BY_NAME_HERO_QUERY,
                 new Object[] {name},
                 new HeroRowMapper());
+    }
+
+    public UUID update(Hero hero, UUID id) {
+        final Map<String, Object> params = Map.of( "id", hero.getId(),
+                "name", hero.getName(),
+                "race", hero.getRace().name(),
+                "powerStatsId", hero.getPowerStatsId());
+
+        return namedParameterJdbcTemplate.queryForObject(
+                UPDATE_HERO_QUERY,
+                params,
+                UUID.class);
     }
 }

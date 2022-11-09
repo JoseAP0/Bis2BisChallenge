@@ -12,7 +12,7 @@ import java.util.UUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
-@NoArgsConstructor(access = PRIVATE)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PowerStats {

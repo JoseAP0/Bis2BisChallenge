@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = PRIVATE)
+@NoArgsConstructor
 public class Hero {
 
     private UUID id;

@@ -5,9 +5,11 @@ import br.com.gubee.interview.core.util.*;
 import br.com.gubee.interview.model.Hero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class HeroRepository {
             " VALUES (:name, :race, :powerStatsId) RETURNING id";
 
     private static final String UPDATE_HERO_QUERY = "UPDATE interview_service.hero SET " +
-            " name=:name, race=:race, power_stats_id=:powerStatsId" +
+            " name= :name, race= :race, power_stats_id= :powerStatsId" +
             " WHERE hero.id = :id";
 
     private static final String FIND_BY_ID_HERO_QUERY = "SELECT hero.id, name, race, strength, agility, dexterity, intelligence, power_stats_id " +
@@ -64,15 +66,29 @@ public class HeroRepository {
                 new HeroRowMapper());
     }
 
-    public UUID update(Hero hero, UUID id) {
-        final Map<String, Object> params = Map.of( "id", hero.getId(),
+    public int update(Hero hero, UUID id) {
+        if (findById(id) == null){
+            throw new HttpStatusCodeException(HttpStatus.NOT_FOUND, "Hero not found") {
+            };
+        }
+        final Map<String, Object> params = Map.of(
                 "name", hero.getName(),
                 "race", hero.getRace().name(),
-                "powerStatsId", hero.getPowerStatsId());
+                "powerStatsId", hero.getPowerStatsId(),
+                "id", id);
 
-        return namedParameterJdbcTemplate.queryForObject(
-                UPDATE_HERO_QUERY,
-                params,
-                UUID.class);
+            return namedParameterJdbcTemplate.update(
+                    UPDATE_HERO_QUERY,
+                    params);
+    }
+    public int delete(UUID id) {
+        if (findById(id) == null){
+            throw new HttpStatusCodeException(HttpStatus.NOT_FOUND, "Hero not found") {
+            };
+        }
+
+        final Map<String, Object> param = Map.of("id", id);
+        return namedParameterJdbcTemplate.update("DELETE FROM interview_service.hero " +
+                                                     "WHERE id = :id", param);
     }
 }

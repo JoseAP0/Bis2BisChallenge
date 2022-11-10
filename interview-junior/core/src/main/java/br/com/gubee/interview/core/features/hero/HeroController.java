@@ -1,12 +1,16 @@
 package br.com.gubee.interview.core.features.hero;
 
 import br.com.gubee.interview.core.features.powerstats.PowerStatsService;
+import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.request.CreateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.net.URI;
 import java.util.List;
@@ -46,11 +50,18 @@ public class HeroController {
         return heroService.findByName(name);
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     @ResponseBody
-    public ResponseEntity<Void> update (@RequestBody CreateHeroRequest updateHeroRequest,  @RequestParam ("id") UUID id) {
+    public String update (@RequestBody CreateHeroRequest updateHeroRequest, @RequestParam ("id") UUID id) {
 
-        final UUID uuid = heroService.update(updateHeroRequest, id);
-        return created(URI.create(format("/api/v1/heroes/%s", id))).build();
+    final int response = heroService.update(updateHeroRequest, id);
+    return "Successfully updated" + response + " Hero";
+    }
+
+    @DeleteMapping
+    @ResponseBody
+    public String delete (@RequestParam UUID id) {
+        int response = heroService.delete(id);
+        return "Successfully deleted " + response + " Hero";
     }
 }

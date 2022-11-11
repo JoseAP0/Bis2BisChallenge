@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
@@ -53,10 +54,14 @@ public class HeroRepository {
     }
 
     List<Object> findById(UUID id) {
+        try {
         return (List<Object>) jdbcTemplate.queryForObject(
                 FIND_BY_ID_HERO_QUERY,
                 new Object[] {id},
-                new HeroRowMapper());
+                new HeroRowMapper());}
+        catch (Exception e) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Hero not found");
+        }
     }
 
     List<Object> findByName (String name) {
@@ -82,13 +87,10 @@ public class HeroRepository {
                     params);
     }
     public int delete(UUID id) {
-        if (findById(id) == null){
-            throw new HttpStatusCodeException(HttpStatus.NOT_FOUND, "Hero not found") {
-            };
-        }
 
         final Map<String, Object> param = Map.of("id", id);
-        return namedParameterJdbcTemplate.update("DELETE FROM interview_service.hero " +
-                                                     "WHERE id = :id", param);
+
+            return namedParameterJdbcTemplate.update("DELETE FROM interview_service.hero " +
+                    "WHERE id = :id", param);
     }
 }

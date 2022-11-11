@@ -1,19 +1,16 @@
 package br.com.gubee.interview.core.features.hero;
 
 import br.com.gubee.interview.core.features.powerstats.PowerStatsService;
-import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.request.CreateHeroRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -63,5 +60,14 @@ public class HeroController {
     public String delete (@RequestParam UUID id) {
         int response = heroService.delete(id);
         return "Successfully deleted " + response + " Hero";
+    }
+
+    @GetMapping
+    @ResponseBody
+    public String compare (@RequestParam String firstName, @RequestParam String secondName){
+        List<Integer> result = heroService.compare(firstName, secondName);
+
+        return "Comparing " + firstName + " vs " + secondName +
+                " the differences are"+": " + result;
     }
 }

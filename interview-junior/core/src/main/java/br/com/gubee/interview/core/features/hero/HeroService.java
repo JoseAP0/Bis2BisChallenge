@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -27,9 +29,7 @@ public class HeroService {
         return heroRepository.findById(id);
     }
 
-    public List<Object> findByName (String name) {
-        return heroRepository.findByName(name);
-    }
+    public List<Object> findByName (String name) { return heroRepository.findByName(name); }
 
     public int update(CreateHeroRequest updateHeroRequest, UUID id) {
         UUID generatedStats = powerStatsService.create(new PowerStats(updateHeroRequest));
@@ -38,5 +38,16 @@ public class HeroService {
 
     public int delete(UUID id) {
         return heroRepository.delete(id);
+    }
+
+    public List<Integer> compare(String firstName, String secondName) {
+        PowerStats firstHero = (PowerStats) findByName(firstName).get(1);
+        PowerStats secondHero = (PowerStats) findByName(secondName).get(1);
+
+        List<Integer> result = Arrays.asList(firstHero.getStrength()-secondHero.getStrength(),
+                                             firstHero.getAgility()-secondHero.getAgility(),
+                                             firstHero.getDexterity()-secondHero.getDexterity(),
+                                             firstHero.getIntelligence()-secondHero.getIntelligence());
+        return  result;
     }
 }

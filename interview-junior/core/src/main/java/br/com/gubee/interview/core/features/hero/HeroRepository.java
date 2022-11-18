@@ -1,10 +1,8 @@
 package br.com.gubee.interview.core.features.hero;
 
-import br.com.gubee.interview.core.features.powerstats.PowerStatsService;
-import br.com.gubee.interview.core.util.*;
+import br.com.gubee.interview.core.util.HeroRowMapper;
 import br.com.gubee.interview.model.Hero;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,8 +17,6 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class HeroRepository {
-    @Autowired
-    PowerStatsService powerStatsService;
 
     private static final String CREATE_HERO_QUERY = "INSERT INTO interview_service.hero" +
             " (name, race, power_stats_id)" +

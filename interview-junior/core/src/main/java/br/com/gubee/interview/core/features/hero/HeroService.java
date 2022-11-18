@@ -5,6 +5,7 @@ import br.com.gubee.interview.model.Hero;
 import br.com.gubee.interview.model.PowerStats;
 import br.com.gubee.interview.model.request.CreateHeroRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class HeroService {
 
     private final PowerStatsService powerStatsService;
+    @Autowired
     private final HeroRepository heroRepository;
 
     @Transactional

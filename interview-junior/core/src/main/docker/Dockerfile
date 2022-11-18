@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim-sid
+FROM openjdk:17
 
 LABEL maintainer="Brainweb"
 LABEL version="1.0"
